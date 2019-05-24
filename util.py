@@ -7,7 +7,7 @@ import sys
 import os
 import codecs
 
-def preprocess(s):
+def preprocess_en(s):
 
     s = s.rstrip()  # trail space, tab, newlineの削除
    
@@ -23,7 +23,7 @@ def preprocess(s):
     s = s.replace(u'i . e .', u'e.g.')
     s = s.replace(u'U . S .', u'U.S.')
     return s
-"""
+
 def preprocess_ja(s):
     s = s.rstrip()  # trail space, tab, newlineの削除
     s = unicodedata.normalize('NFKC', s)  # まず正規化
@@ -40,4 +40,3 @@ def split(s, lang):
         return list(s)
     else:
         return s.split()
-"""
