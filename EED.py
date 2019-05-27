@@ -1,12 +1,14 @@
 # -*- coding:utf-8 -*-
 import ctypes
+import os
 
 import util
 
 
 #Python wrpaper for the C++ EED implementation
 def eed(hyp, ref):
-    _eed = ctypes.CDLL('libEED.so')
+    _eed = ctypes.CDLL(os.path.dirname(os.path.abspath(__file__)) + '/libEED.so')
+    #print(os.path.dirname(os.path.abspath(__file__)))
     _eed.wrapper.restype = ctypes.c_float
     hyp.insert(0, " ")
     hyp.append(" ")
