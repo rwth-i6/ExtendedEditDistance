@@ -6,7 +6,7 @@ using namespace std;
 
 float EED(const std::vector<unsigned long long> hyp, const std::vector<unsigned long long> ref, const float alpha, const float deletion,  const float insertion, const float substitution, const float rho, const int norm){
     
-    std::vector<int> lj(hyp.size() + 1, 0); //Coverage Tracker
+    std::vector<int> lj(hyp.size() + 1, -1); //Coverage Tracker
     std::vector<float> row(hyp.size() + 1, 1); 
     row[0] = float(0); //CDER initialisation 0,0 = 0 rest 1   
     std::vector<float> nextRow(hyp.size() + 1, std::numeric_limits<float>::max());
@@ -50,9 +50,12 @@ float EED(const std::vector<unsigned long long> hyp, const std::vector<unsigned 
     }  
     float coverage = 0;
     for(int i = 1; i < lj.size(); ++i){
-      if(lj[i] > 1){
-        coverage += lj[i];
-      }
+	    if(lj[i] < 0){
+        coverage += 1;
+	    }
+	    else{
+	    coverage += lj[i];
+	    }
     } 
     float errors = row[row.size()-1];
     return (errors + rho*coverage)/(norm + rho*coverage);     

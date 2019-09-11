@@ -8,7 +8,6 @@ import util
 #Python wrpaper for the C++ EED implementation
 def eed(hyp, ref):
     _eed = ctypes.CDLL(os.path.dirname(os.path.abspath(__file__)) + '/libEED.so')
-    #print(os.path.dirname(os.path.abspath(__file__)))
     _eed.wrapper.restype = ctypes.c_float
     hyp.insert(0, " ")
     hyp.append(" ")
@@ -57,7 +56,7 @@ def eed_python(hyp, ref):
     #substitutions are implemented via the distance function
     insertion = 1.0
     rho = 0.3
-    lj =[0]*(len(hyp)+1)
+    lj =[-1]*(len(hyp)+1)
     row = [1]*(len(hyp)+1) #row[i] stores cost of cheapest path from (0,0) to (i,l) in CDER aligment grid.
     row[0] = 0 #CDER initialisation 0,0 = 0 rest 1
     nextRow = [float('inf')]*(len(hyp)+1)
@@ -71,19 +70,19 @@ def eed_python(hyp, ref):
         lj[minInd] += 1
         #Long Jumps
         if ref[w-1] == " ":
-          longJump = alpha + nextRow[minInd]
-          nextRow = [x if x < longJump else longJump for x in nextRow]
+          jump = alpha + nextRow[minInd]
+          nextRow = [x if x < jump else jump for x in nextRow]
         row = nextRow 
         nextRow = [float('inf')] *(len(hyp)+1)
-        coverage = rho*sum([x if x > 1 else 0 for x in lj])
+    coverage = rho*sum([x if x >= 0 else 1 for x in lj])
     return min(1, (row[-1]+ coverage)/(float(len(ref)) + coverage))
 
 
 #Provides System scoring with full preprocessing in the case where EED is used as an import  
 def score(hypIn, refIn):
     import codecs
-    hyp = [util.preprocess(x) for x in open(hypIn, 'r', 'utf-8').readlines()]
-    ref = [util.preprocess(x) for x in open(refIn, 'r', 'utf-8').readlines()]
+    hyp = [util.preprocess(x, "en") for x in codecs.open(hypIn, 'r', 'utf-8').readlines()]
+    ref = [util.preprocess(x, "en") for x in codecs.open(refIn, 'r', 'utf-8').readlines()]
     scores = []
     for (h,r) in zip(hyp,ref):
         h, r = list(h), list(r)
