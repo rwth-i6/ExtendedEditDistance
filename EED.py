@@ -2,7 +2,7 @@
 import ctypes
 import os
 
-import util
+from . import utils
 
 
 #Python wrpaper for the C++ EED implementation
